@@ -4,11 +4,11 @@ const { OAuth2Client } = require("google-auth-library");
 require("dotenv").config();
 
 router.post("/", async (req, res, next) => {
-  console.log("request coming in...")
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Credentials", "true");
   res.header("Referrer-Policy", "no-referrer-when-downgrade");
 
-  const redirectUrl = "http://127.0.0.1:3000/oauth";
+  const redirectUrl = "http://127.0.0.1:3000/authenticate";
 
   const oAuth2Client = new OAuth2Client(
     process.env.CLIENT_ID,
@@ -22,6 +22,7 @@ router.post("/", async (req, res, next) => {
     prompt: "consent",
   });
 
+  console.log(authorizedUrl);
   res.json({ url: authorizedUrl });
 });
 

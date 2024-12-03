@@ -17,10 +17,10 @@ app.options("*", (req, res, next) => {
   next();
 });
 
-app.use("/oauth", oAuthRouter);
+app.use("/authenticate", oAuthRouter);
 app.use("/google-oauth-request", requestRouter);
 
-app.get("/oauth", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Learning nodejs");
 });
 
