@@ -17,7 +17,7 @@ async function getUserData(access_token) {
 router.get("/", async (req, res) => {
   const code = req.query.code;
   try {
-    const redirectUrl = "http://127.0.0.1:3000/authenticate";
+    const redirectUrl = `${process.env.HOSTNAME}:${process.env.PORT}/authenticate`;
 
     const oAuth2Client = new OAuth2Client(
       process.env.CLIENT_ID,

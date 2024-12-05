@@ -2,8 +2,12 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 
-const requestRouter = require("./routes/request_oauth");
-const oAuthRouter = require("./routes/oauth");
+const {connectDB} = require("./config/connectDB/connectdb");
+
+const bodyPaser = require('body-parser')
+const requestRouter = require("./routes/oauth/request_oauth");
+const oAuthRouter = require("./routes/oauth/oauth");
+const signupRouter = require('./routes/signup/signup')
 
 app.options("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
@@ -17,14 +21,19 @@ app.options("*", (req, res, next) => {
   next();
 });
 
+app.use(bodyPaser.json())
+
 app.use("/authenticate", oAuthRouter);
 app.use("/google-oauth-request", requestRouter);
+app.use("/signup", signupRouter)
 
 app.get("/", (req, res) => {
-  res.send("Learning nodejs");
+  res.send("Nodejs expxress");
 });
 
 const { PORT, HOSTNAME } = process.env;
 app.listen(PORT, HOSTNAME, () => {
   console.log(`Server running on ${HOSTNAME}:${PORT}`);
+  connectDB()
+      .catch(console.error)
 });
