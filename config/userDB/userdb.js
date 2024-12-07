@@ -21,6 +21,15 @@ async function findUser(data){
     }
 }
 
+async function findUserById(id){
+    try {
+        const user = await collection.findOne({_id: id})
+        return user
+    }catch (e) {
+        console.error(e)
+    }
+}
+
 async function createUser(data){
     try {
         const d = new Date();
@@ -36,4 +45,4 @@ async function createUser(data){
     }
 }
 
-module.exports = {findUsers, findUser, createUser}
+module.exports = {findUsers, findUser, createUser, findUserById}

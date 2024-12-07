@@ -7,7 +7,6 @@ const {connectDB} = require("./config/connectDB/connectdb");
 const bodyPaser = require('body-parser')
 const requestRouter = require("./routes/oauth/request_oauth");
 const oAuthRouter = require("./routes/oauth/oauth");
-const signupRouter = require('./routes/signup/signup')
 
 app.options("*", (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://localhost:5173");
@@ -20,6 +19,8 @@ app.options("*", (req, res, next) => {
   res.status(200);
   next();
 });
+
+const signupRouter = require('./routes/signup/signup')
 
 app.use(bodyPaser.json())
 
