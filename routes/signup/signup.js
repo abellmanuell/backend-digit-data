@@ -34,7 +34,7 @@ if(result.isEmpty()){
     const userCreated = await createUser({email: data.email, password})
 
     if(userCreated.acknowledged){
-        const user =  userCreated.insertedId && await findUserById(userCreated.insertedId)
+        const {password, ...user} =  userCreated.insertedId && await findUserById(userCreated.insertedId)
         const token = jwt.sign({...user}, process.env.JWT_SECRET_KEY, {expiresIn: '1h'})
 
         return server_response(200, res, "Created successfully!",  {
