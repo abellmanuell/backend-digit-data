@@ -2,9 +2,9 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 
-const {connectDB} = require("./config/connectDB/connectdb");
+const { connectDB } = require("./config/connectDB/connectdb");
 
-const bodyPaser = require('body-parser')
+const bodyPaser = require("body-parser");
 const requestRouter = require("./routes/oauth/request_oauth");
 const oAuthRouter = require("./routes/oauth/oauth");
 
@@ -20,13 +20,13 @@ app.options("*", (req, res, next) => {
   next();
 });
 
-const signupRouter = require('./routes/signup/signup')
+const signupRouter = require("./routes/signup/signup");
 
-app.use(bodyPaser.json())
+app.use(bodyPaser.json());
 
 app.use("/authenticate", oAuthRouter);
 app.use("/google-oauth-request", requestRouter);
-app.use("/signup", signupRouter)
+app.use("/signup", signupRouter);
 
 app.get("/", (req, res) => {
   res.send("Nodejs expxress");
@@ -35,6 +35,5 @@ app.get("/", (req, res) => {
 const { PORT, HOSTNAME } = process.env;
 app.listen(PORT, HOSTNAME, () => {
   console.log(`Server running on ${HOSTNAME}:${PORT}`);
-  connectDB()
-      .catch(console.error)
+  connectDB().catch(console.error);
 });
