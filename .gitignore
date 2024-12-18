@@ -5,4 +5,5 @@
 *oauthUI
 *dist
 
+# Convert all JS to TS files
 *convert-js-to-ts.sh
