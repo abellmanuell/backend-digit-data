@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev:backend": "concurrently -k \"tsc -p ./src/app.ts -w\" \"nodemon ./dist/app.js\""
+    "dev:backend": "nodemon app.js"
   },
   "keywords": [],
   "author": "",

@@ -9,3 +9,4 @@ async function connectDB() {
 }
 
 module.exports = { client, connectDB };
+

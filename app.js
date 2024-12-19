@@ -21,12 +21,14 @@ app.options("*", (req, res, next) => {
 });
 
 const signupRouter = require("./routes/signup/signup");
+const signinRouter = require("./routes/signin/signin");
 
 app.use(bodyPaser.json());
 
 app.use("/authenticate", oAuthRouter);
 app.use("/google-oauth-request", requestRouter);
 app.use("/signup", signupRouter);
+app.use("/signin", signinRouter)
 
 app.get("/", (req, res) => {
   res.send("Nodejs expxress");

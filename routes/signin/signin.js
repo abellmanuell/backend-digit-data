@@ -1,10 +1,7 @@
 const express = require("express");
 const { body, validationResult, matchedData } = require("express-validator");
 const {
-  findUsers,
   findUser,
-  createUser,
-  findUserById,
 } = require("../../config/userDB/userdb");
 const router = express.Router();
 require("dotenv").config();
@@ -13,22 +10,7 @@ const jwt = require("jsonwebtoken");
 const {
   refreshToken,
 } = require("../../utils/generateRefreshToken/generateRefreshToken");
-
-function server_response(status = 200, response, message = "", options = {}) {
-  response.header(
-    "Access-Control-Allow-Origin",
-    process.env.ACCESS_CONTROL_ALLOW_ORIGIN
-  );
-  response.header(
-    "Access-Control-Allow-Methods",
-    "GET, OPTIONS, POST, PUT, DELETE"
-  );
-  response.header("Access-Control-Allow-Credentials", "true");
-  true;
-  response.status(status);
-  response.header("Content-Type", "application/json");
-  response.json({ status, message, ...options });
-}
+const {server_response} = require("../../utils/server_response")
 
 router.post(
   "/",
@@ -50,30 +32,27 @@ router.post(
       const data = matchedData(req);
       const isUserExist = await findUser(data);
 
-      if (isUserExist) {
-        return server_response(401, res, "Email address is taken!");
+      if (!isUserExist) {
+        return server_response(404, res, "Account does not exist!");
       }
 
-      const password = await bcrypt.hash(data.password, 13);
-      const userCreated = await createUser({ email: data.email, password });
+      const password = await bcrypt.compare(data.password, isUserExist.password)
 
-      if (userCreated.acknowledged) {
-        const { password, ...user } =
-          userCreated.insertedId &&
-          (await findUserById(userCreated.insertedId));
+      if (password) {
+        const { password, ...user } = isUserExist;
         const token = jwt.sign({ ...user }, process.env.JWT_SECRET_KEY, {
           expiresIn: "1h",
         });
 
-        return server_response(200, res, "Created successfully!", {
+        return server_response(200, res, "Sign successfully!", {
           token,
           refresh_Token: await refreshToken(),
         });
       } else {
         return server_response(
-          500,
+          404,
           res,
-          "Unexpected error occurred, user not created!"
+          "Password is incorrect!"
         );
       }
     }
