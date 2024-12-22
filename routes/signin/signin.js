@@ -40,13 +40,12 @@ router.post(
 
       if (password) {
         const { password, ...user } = isUserExist;
-        const token = jwt.sign({ ...user }, process.env.JWT_SECRET_KEY, {
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
           expiresIn: "1h",
         });
 
         return server_response(200, res, "Sign successfully!", {
-          token,
-          refresh_Token: await refreshToken(),
+          token, refresh_token: await refreshToken(user._id)
         });
       } else {
         return server_response(

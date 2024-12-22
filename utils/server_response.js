@@ -12,6 +12,7 @@ function server_response(status = 200, response, message = "", options = {}) {
   response.status(status);
   response.header("Content-Type", "application/json");
   response.json({ status, message, ...options });
+  response.end();
 }
 
 module.exports = {server_response}

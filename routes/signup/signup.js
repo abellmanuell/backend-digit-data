@@ -1,7 +1,6 @@
 const express = require("express");
 const { body, validationResult, matchedData } = require("express-validator");
 const {
-  findUsers,
   findUser,
   createUser,
   findUserById,
@@ -46,13 +45,13 @@ router.post(
         const { password, ...user } =
           userCreated.insertedId &&
           (await findUserById(userCreated.insertedId));
-        const token = jwt.sign({ ...user }, process.env.JWT_SECRET_KEY, {
+
+        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
           expiresIn: "1h",
         });
 
         return server_response(200, res, "Created successfully!", {
-          token,
-          refresh_Token: await refreshToken(),
+          token, refresh_token: await refreshToken(user._id)
         });
       } else {
         return server_response(
