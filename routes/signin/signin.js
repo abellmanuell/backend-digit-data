@@ -1,8 +1,6 @@
 const express = require("express");
 const { body, validationResult, matchedData } = require("express-validator");
-const {
-  findUser,
-} = require("../../config/userDB/userdb");
+const { findUser } = require("../../config/userDB/userdb");
 const router = express.Router();
 require("dotenv").config();
 const bcrypt = require("bcrypt");
@@ -10,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const {
   refreshToken,
 } = require("../../utils/generateRefreshToken/generateRefreshToken");
-const {server_response} = require("../../utils/server_response")
+const { server_response } = require("../../utils/server_response");
 
 router.post(
   "/",
@@ -36,23 +34,27 @@ router.post(
         return server_response(404, res, "Account does not exist!");
       }
 
-      const password = await bcrypt.compare(data.password, isUserExist.password)
+      const password = await bcrypt.compare(
+        data.password,
+        isUserExist.password
+      );
 
       if (password) {
         const { password, ...user } = isUserExist;
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
-          expiresIn: "1h",
-        });
+        const token = jwt.sign(
+          { userId: user._id },
+          process.env.JWT_SECRET_KEY,
+          {
+            expiresIn: "120ms",
+          }
+        );
 
         return server_response(200, res, "Sign successfully!", {
-          token, refresh_token: await refreshToken(user._id)
+          token,
+          refresh_token: await refreshToken(user._id),
         });
       } else {
-        return server_response(
-          404,
-          res,
-          "Password is incorrect!"
-        );
+        return server_response(404, res, "Password is incorrect!");
       }
     }
 

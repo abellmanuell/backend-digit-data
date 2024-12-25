@@ -9,6 +9,7 @@ async function generateRefreshToken(token, userId) {
     const refresh_token = await refreshTokenCollection.insertOne({
       _id: uuidv7(),
       created_at: d,
+      updated_at: d,
       refresh_token: token,
       userId,
     });
@@ -20,24 +21,30 @@ async function generateRefreshToken(token, userId) {
 
 async function getRefreshToken(token_Id) {
   try {
-    const token = await refreshTokenCollection.findOne({ $or:[{_id: token_Id}, {refresh_token: token_Id}] });
+    const token = await refreshTokenCollection.findOne({
+      $or: [{ _id: token_Id }, { refresh_token: token_Id }],
+    });
+    console.log(token);
     return token;
   } catch (e) {
     console.error(e);
   }
 }
-function updateRefreshToken(token, userId) {
+
+function updateRefreshToken(oldToken, newToken) {
   try {
     const d = new Date();
     const refresh_token = refreshTokenCollection.updateOne(
-      { userId },
+      { $or: [{ userId: oldToken }, { refresh_token: oldToken }] },
       {
         $set: {
-          refresh_token: token,
-          created_at: d,
+          refresh_token: newToken,
+          updated_at: d,
         },
       }
     );
+
+    console.log(refresh_token);
     return refresh_token;
   } catch (e) {
     console.error(e);

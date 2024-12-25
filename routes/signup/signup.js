@@ -12,7 +12,7 @@ const jwt = require("jsonwebtoken");
 const {
   refreshToken,
 } = require("../../utils/generateRefreshToken/generateRefreshToken");
-const {server_response} = require("../../utils/server_response")
+const { server_response } = require("../../utils/server_response");
 
 router.post(
   "/",
@@ -46,12 +46,17 @@ router.post(
           userCreated.insertedId &&
           (await findUserById(userCreated.insertedId));
 
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
-          expiresIn: "1h",
-        });
+        const token = jwt.sign(
+          { userId: user._id },
+          process.env.JWT_SECRET_KEY,
+          {
+            expiresIn: "120ms",
+          }
+        );
 
         return server_response(200, res, "Created successfully!", {
-          token, refresh_token: await refreshToken(user._id)
+          token,
+          refresh_token: await refreshToken(user._id),
         });
       } else {
         return server_response(
