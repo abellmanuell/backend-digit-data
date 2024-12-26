@@ -1,7 +1,7 @@
 const express = require("express");
 const { server_response } = require("../../utils/server_response");
-const { findUserById } = require("../../config/userDB/userdb");
-const { body, matchedData } = require("express-validator");
+const { findUserById, updateUser } = require("../../config/userDB/userdb");
+const { body, matchedData, validationResult } = require("express-validator");
 const router = express.Router();
 
 const userRouter = router.get("/", async (req, res, next) => {
@@ -19,19 +19,29 @@ const editUserProfileRouter = router.put(
   [
     body("given_name").trim(),
     body("family_name").trim(),
-    body("email").trim(),
-    body("phone_number").trim(),
+    body("email").trim().notEmpty().isEmail(),
+    body("phone_number").trim().isNumeric(),
   ],
-  (req, res) => {
+  async (req, res) => {
     try {
-      const data = matchedData(req);
-      console.log(data);
+      const result = validationResult(req);
+      const id = req.user.userId;
 
-      const { given_name, family_name, phone_number } = data;
-      if (given_name && family_name && phone_number) {
-        console.log(5);
+      if (result.isEmpty) {
+        const data = matchedData(req);
+        const { acknowledged } = await updateUser(id, data);
+        if (acknowledged) {
+          const { password, ...other } = await findUserById(id);
+          return server_response(200, res, "Successfully updated", {
+            data: { ...other },
+          });
+        }
+      } else {
+        return server_response(404, res, "Email address is required");
       }
-    } catch {}
+    } catch {
+      throw new Error();
+    }
   }
 );
 

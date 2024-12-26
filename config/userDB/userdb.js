@@ -48,4 +48,17 @@ async function createUser(data) {
   }
 }
 
-module.exports = { findUsers, findUser, createUser, findUserById };
+async function updateUser(id, data) {
+  try {
+    const d = new Date();
+    const updatedUser = await collection.updateOne(
+      { _id: id },
+      { $set: { ...data, updated_at: d } }
+    );
+    return updatedUser;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+module.exports = { findUsers, findUser, createUser, findUserById, updateUser };
