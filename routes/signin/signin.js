@@ -1,6 +1,6 @@
 const express = require("express");
 const { body, validationResult, matchedData } = require("express-validator");
-const { findUser } = require("../../config/userDB/userdb");
+const { findUser } = require("../../config/userQuery/userdb");
 const router = express.Router();
 require("dotenv").config();
 const bcrypt = require("bcrypt");

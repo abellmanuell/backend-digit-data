@@ -4,7 +4,7 @@ const {
   findUser,
   createUser,
   findUserById,
-} = require("../../config/userDB/userdb");
+} = require("../../config/userQuery/userdb");
 const router = express.Router();
 require("dotenv").config();
 const bcrypt = require("bcrypt");

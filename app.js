@@ -29,6 +29,9 @@ const {
   editUserProfileRouter,
 } = require("./routes/userRouter/user");
 const refreshTokenRouter = require("./routes/refreshTokenRouter/refreshToken");
+const topUpRouter = require("./routes/topupRouter/topup");
+const networksRouter = require("./routes/networksRouter/networks");
+const airtimeTypeRouter = require("./routes/airtimeTypeRouter/airtimeType");
 
 const { server_response } = require("./utils/server_response");
 const { jwtVerify } = require("./utils/JwtVerify/jwtVerify");
@@ -40,10 +43,13 @@ app.use("/google-oauth-request", requestRouter);
 app.use("/signup", signupRouter);
 app.use("/signin", signinRouter);
 app.use("/api/refresh-token", refreshTokenRouter);
+app.use("/api/networks", networksRouter);
+app.use("/api/airtime-type", airtimeTypeRouter);
 
 app.all("/api/*", requiredAuthentication);
 app.use("/api/user", userRouter);
 app.use("/api/user/profile/edit", editUserProfileRouter);
+app.use("/api/topup", topUpRouter);
 
 async function requiredAuthentication(req, res, next) {
   try {

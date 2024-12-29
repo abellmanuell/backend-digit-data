@@ -1,6 +1,6 @@
 const express = require("express");
 const { server_response } = require("../../utils/server_response");
-const { findUserById, updateUser } = require("../../config/userDB/userdb");
+const { findUserById, updateUser } = require("../../config/userQuery/userdb");
 const { body, matchedData, validationResult } = require("express-validator");
 const router = express.Router();
 
