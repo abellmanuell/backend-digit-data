@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  mongo_db:
+    container_name: database_container
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+  
+  node_app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment: 
+      PORT: 3000
+      HOSTNAME: 127.0.0.1
+      DB_CONNECTION_URL: mongodb://mongo_db:27017/
+      JWT_SECRET_KEY: mannydev02@gmail.com
+      ACCESS_CONTROL_ALLOW_ORIGIN: http://localhost:5173
+    depends_on:
+      - mongo_db 
+
+volumes:
+  mongo_db: {}
