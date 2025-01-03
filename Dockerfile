@@ -8,5 +8,4 @@ COPY ./app.js .
 COPY ./config/ ./config
 COPY ./routes/ ./routes
 COPY ./utils/ ./utils
-COPY ./.env/ .
 CMD [ "pnpm", "run", "dev:backend" ]

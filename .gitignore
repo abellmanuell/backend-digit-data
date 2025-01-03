@@ -9,3 +9,4 @@
 # Convert all JS to TS files
 *convert-js-to-ts.sh
 .vercel
+.env*.local
