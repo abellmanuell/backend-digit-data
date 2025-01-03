@@ -46,6 +46,10 @@ app.use("/api/refresh-token", refreshTokenRouter);
 app.use("/api/networks", networksRouter);
 app.use("/api/airtime-type", airtimeTypeRouter);
 
+app.get("/", (req, res) => {
+  res.send("Nodejs expxress");
+});
+
 app.all("/api/*", requiredAuthentication);
 app.use("/api/user", userRouter);
 app.use("/api/user/profile/edit", editUserProfileRouter);
@@ -61,12 +65,10 @@ async function requiredAuthentication(req, res, next) {
   }
 }
 
-app.get("/", (req, res) => {
-  res.send("Nodejs expxress");
-});
-
 const { PORT, HOSTNAME } = process.env;
-app.listen(PORT, HOSTNAME, () => {
+app.listen(PORT, () => {
   console.log(`Server running on ${HOSTNAME}:${PORT}`);
   connectDB().catch(console.error);
 });
+
+module.exports = app;
