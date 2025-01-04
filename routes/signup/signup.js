@@ -39,7 +39,14 @@ router.post(
       }
 
       const password = await bcrypt.hash(data.password, 13);
-      const userCreated = await createUser({ email: data.email, password });
+      const userCreated = await createUser({
+        email: data.email,
+        password,
+        given_name: "",
+        family_name: "",
+        phone_number: "",
+        wallet_balance: 0,
+      });
 
       if (userCreated.acknowledged) {
         const { password, ...user } =
