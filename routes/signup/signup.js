@@ -42,10 +42,6 @@ router.post(
       const userCreated = await createUser({
         email: data.email,
         password,
-        given_name: "",
-        family_name: "",
-        phone_number: "",
-        wallet_balance: 0,
       });
 
       if (userCreated.acknowledged) {

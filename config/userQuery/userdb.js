@@ -41,6 +41,7 @@ async function createUser(data) {
       family_name: "",
       created_at: d,
       updated_at: d,
+      wallet_balance: 0,
     });
     return user;
   } catch (e) {
