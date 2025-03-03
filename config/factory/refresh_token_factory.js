@@ -13,6 +13,7 @@ async function generateRefreshToken(token, userId) {
       refresh_token: token,
       userId,
     });
+
     return refresh_token;
   } catch (e) {
     console.error(e);

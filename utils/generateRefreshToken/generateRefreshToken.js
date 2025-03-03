@@ -28,10 +28,13 @@ async function refreshToken(userId) {
         refresh_token_hash,
         userId
       );
-      const { refresh_token } = await getRefreshToken(
-        generatedRefreshToken.insertedId
-      );
-      return refresh_token;
+
+      if (generateRefreshToken.acknowledged) {
+        const { refresh_token } = await getRefreshToken(
+          generatedRefreshToken.insertedId
+        );
+        return refresh_token;
+      }
     }
   } catch {
     throw new Error("Error occurred while refreshing token");
