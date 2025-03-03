@@ -47,7 +47,7 @@ app.use("/api/networks", networksRouter);
 app.use("/api/airtime-type", airtimeTypeRouter);
 
 app.get("/", (req, res) => {
-  res.send("Nodejs expxress");
+  res.send("Digi Data Application");
 });
 
 app.all("/api/*", requiredAuthentication);
@@ -61,7 +61,7 @@ async function requiredAuthentication(req, res, next) {
     req.user = decoded;
     next();
   } catch {
-    return server_response(401, res, "Unauthorized");
+    return server_response(401, res, "Unauthorized access");
   }
 }
 

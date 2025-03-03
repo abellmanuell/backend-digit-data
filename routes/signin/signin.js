@@ -41,11 +41,12 @@ router.post(
 
       if (password) {
         const { password, ...user } = isUserExist;
+
         const token = jwt.sign(
           { userId: user._id },
           process.env.JWT_SECRET_KEY,
           {
-            expiresIn: "120ms",
+            expiresIn: "1m",
           }
         );
 

@@ -19,15 +19,17 @@ router.post(
       const { refresh_token: id } = matchedData(req);
 
       const rt = await getRefreshToken(id);
-      const userId = rt.userId;
 
       if (!rt) {
         return server_response(404, res, "Refresh token not found");
       }
 
+      const userId = rt.userId;
+
       const token = jwt.sign({ userId }, process.env.JWT_SECRET_KEY, {
-        expiresIn: "1h",
+        expiresIn: "1m",
       });
+
       return server_response(200, res, "Successfully verified!", {
         token,
         refresh_token: await refreshToken(userId),

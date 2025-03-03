@@ -4,22 +4,26 @@ const {
   updateRefreshToken,
 } = require("../../config/factory/refresh_token_factory");
 const { v7: uuidv7 } = require("uuid");
-const bcrypt = require("bcrypt");
 
 async function refreshToken(userId) {
   try {
-    const refreshToken = await getRefreshToken(userId);
-    console.log("refreshing...", refreshToken);
-
     const refresh_token_hash = uuidv7();
 
+    /* Check if refresh token exist before proceed */
+    const refreshToken = await getRefreshToken(userId);
+
+    /* Update refresh token if exist */
     if (refreshToken) {
       const { acknowledged } = await updateRefreshToken(
         userId,
         refresh_token_hash
       );
-      return acknowledged & (await getRefreshToken(userId).refresh_token);
+      if (acknowledged) {
+        const { refresh_token } = await getRefreshToken(userId);
+        return refresh_token;
+      }
     } else {
+      /* Generate fresh token */
       const generatedRefreshToken = await generateRefreshToken(
         refresh_token_hash,
         userId

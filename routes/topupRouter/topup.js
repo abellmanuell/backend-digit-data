@@ -6,6 +6,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   try {
     const wallet_balance = await topUpDb(req.user.userId);
+
     if (!wallet_balance[0].wallet_balance) {
       return server_response(
         400,

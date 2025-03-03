@@ -1,0 +1,11 @@
+{
+  "terminal.integrated.defaultProfile.linux": "zsh",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnSave": true,
+  "workbench.colorTheme": "Monokai",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "workbench.iconTheme": "Monokai Pro (Filter Spectrum) Icons"
+}
