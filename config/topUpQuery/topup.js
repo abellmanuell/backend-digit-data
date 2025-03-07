@@ -2,7 +2,7 @@ const { client } = require("../connectDB/connectdb");
 const db = client.db("digit_data_db");
 const collection = db.collection("users");
 
-async function topUpDb(userId) {
+async function topUpDB(userId) {
   try {
     const wallet_balance = await collection
       .find({ _id: userId })
@@ -14,4 +14,4 @@ async function topUpDb(userId) {
   }
 }
 
-module.exports = { topUpDb };
+module.exports = { topUpDB };

@@ -1,4 +1,9 @@
-function server_response(status = 200, response, message = "", options = {}) {
+function server_response(
+  status = 200,
+  response,
+  message = null,
+  options = null
+) {
   response.header(
     "Access-Control-Allow-Origin",
     process.env.ACCESS_CONTROL_ALLOW_ORIGIN
@@ -15,4 +20,4 @@ function server_response(status = 200, response, message = "", options = {}) {
   response.end();
 }
 
-module.exports = {server_response}
+module.exports = { server_response };

@@ -32,6 +32,7 @@ const refreshTokenRouter = require("./routes/refreshTokenRouter/refreshToken");
 const topUpRouter = require("./routes/topupRouter/topup");
 const networksRouter = require("./routes/networksRouter/networks");
 const airtimeTypeRouter = require("./routes/airtimeTypeRouter/airtimeType");
+const transactionsRouter = require("./routes/transactionsRouter/transactions");
 
 const { server_response } = require("./utils/server_response");
 const { jwtVerify } = require("./utils/JwtVerify/jwtVerify");
@@ -54,6 +55,7 @@ app.all("/api/*", requiredAuthentication);
 app.use("/api/user", userRouter);
 app.use("/api/user/profile/edit", editUserProfileRouter);
 app.use("/api/topup", topUpRouter);
+app.use("/api/transactions", transactionsRouter);
 
 async function requiredAuthentication(req, res, next) {
   try {
