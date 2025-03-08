@@ -10,4 +10,19 @@ async function jwtVerify(req) {
   }
 }
 
-module.exports = { jwtVerify };
+async function jwtDecode(req) {
+  const authorization = req.headers.authorization;
+  const token = authorization && authorization.split(" ")[1];
+
+  if (token) {
+    const decoded = jwt.decode(token);
+    const now = Math.floor(Date.now() / 1000);
+    const expirationTime = decoded.exp;
+    return {
+      token,
+      isExpired: expirationTime > now && expirationTime < now + 3600,
+    };
+  }
+}
+
+module.exports = { jwtVerify, jwtDecode };

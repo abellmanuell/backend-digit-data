@@ -9,6 +9,7 @@ const {
 } = require("../../utils/generateRefreshToken/generateRefreshToken");
 const { server_response } = require("../../utils/server_response");
 const jwt = require("jsonwebtoken");
+const { jwtDecode } = require("../../utils/JwtVerify/jwtVerify");
 
 router.post(
   "/",
@@ -18,22 +19,31 @@ router.post(
     if (result.isEmpty()) {
       const { refresh_token: id } = matchedData(req);
 
+      /* Check if token exist */
+      const { decodeToken, isExpired } = await jwtDecode(req);
       const rt = await getRefreshToken(id);
 
       if (!rt) {
         return server_response(404, res, "Refresh token not found");
       }
 
-      const userId = rt.userId;
+      /* Execute if token expired */
+      if (isExpired) {
+        const userId = rt.userId;
+        const token = jwt.sign({ userId }, process.env.JWT_SECRET_KEY, {
+          expiresIn: "1h",
+        });
 
-      const token = jwt.sign({ userId }, process.env.JWT_SECRET_KEY, {
-        expiresIn: "1m",
-      });
-
-      return server_response(200, res, "Successfully verified!", {
-        token,
-        refresh_token: await refreshToken(userId),
-      });
+        return server_response(200, res, "Token Successfully renewed!", {
+          // token,
+          refresh_token: await refreshToken(userId),
+        });
+      } else {
+        return server_response(200, res, "Token still valid!", {
+          // token: decodeToken,
+          refresh_token: id,
+        });
+      }
     }
   }
 );

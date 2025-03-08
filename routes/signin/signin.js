@@ -46,7 +46,7 @@ router.post(
           { userId: user._id },
           process.env.JWT_SECRET_KEY,
           {
-            expiresIn: "1m",
+            expiresIn: "1h",
           }
         );
 
