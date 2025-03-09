@@ -9,9 +9,7 @@ const router = express.Router();
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const {
-  refreshToken,
-} = require("../../utils/generateRefreshToken/generateRefreshToken");
+
 const { server_response } = require("../../utils/server_response");
 
 router.post(
@@ -59,7 +57,6 @@ router.post(
 
         return server_response(200, res, "Created successfully!", {
           token,
-          refresh_token: await refreshToken(user._id),
         });
       } else {
         return server_response(

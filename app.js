@@ -28,7 +28,7 @@ const {
   userRouter,
   editUserProfileRouter,
 } = require("./routes/userRouter/user");
-const refreshTokenRouter = require("./routes/refreshTokenRouter/refreshToken");
+// const refreshTokenRouter = require("./routes/refreshTokenRouter/refreshToken");
 const topUpRouter = require("./routes/topupRouter/topup");
 const networksRouter = require("./routes/networksRouter/networks");
 const airtimeTypeRouter = require("./routes/airtimeTypeRouter/airtimeType");
@@ -43,7 +43,7 @@ app.use("/authenticate", oAuthRouter);
 app.use("/google-oauth-request", requestRouter);
 app.use("/signup", signupRouter);
 app.use("/signin", signinRouter);
-app.use("/api/refresh-token", refreshTokenRouter);
+// app.use("/api/refresh-token", refreshTokenRouter);
 app.use("/api/networks", networksRouter);
 app.use("/api/airtime-type", airtimeTypeRouter);
 
