@@ -32,7 +32,7 @@ const {
 const topUpRouter = require("./routes/topupRouter/topup");
 const networksRouter = require("./routes/networksRouter/networks");
 const airtimeTypeRouter = require("./routes/airtimeTypeRouter/airtimeType");
-const transactionsRouter = require("./routes/transactionsRouter/transactions");
+const transactionsRouter = require("./routes/transactionsRouter/transactionsRouter");
 
 const { server_response } = require("./utils/server_response");
 const { jwtVerify } = require("./utils/JwtVerify/jwtVerify");
@@ -43,7 +43,6 @@ app.use("/authenticate", oAuthRouter);
 app.use("/google-oauth-request", requestRouter);
 app.use("/signup", signupRouter);
 app.use("/signin", signinRouter);
-// app.use("/api/refresh-token", refreshTokenRouter);
 app.use("/api/networks", networksRouter);
 app.use("/api/airtime-type", airtimeTypeRouter);
 
