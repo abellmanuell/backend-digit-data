@@ -35,7 +35,12 @@ router.post(
           redirect_url:
             process.env.ACCESS_CONTROL_ALLOW_ORIGIN + "/dashboard/success",
         });
-        return server_response(200, res, link);
+
+        if (link.status !== "error") {
+          return server_response(200, res, link);
+        } else {
+          return server_response(500, res, link);
+        }
       } else {
         return server_response(406, res, { error: result.array() });
       }
