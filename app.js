@@ -37,6 +37,7 @@ const webhookRouter = require("./routes/webhookRouter/webhook");
 
 const { server_response } = require("./utils/server_response");
 const { jwtVerify } = require("./utils/JwtVerify/jwtVerify");
+const { addFund } = require("./config/walletQuery/wallet");
 
 app.use(bodyPaser.json());
 
