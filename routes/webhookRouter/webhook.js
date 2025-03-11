@@ -24,10 +24,13 @@ router.post("/", async (req, res) => {
     // and we can discard it
     if (payload.data.status === "successful") {
       // It's a good idea to log all received events.
-      const { amount, customer } = payload;
+      const {
+        amount,
+        customer: { email },
+      } = payload.data;
 
       console.log(payload);
-      await addFund(amount, customer.email);
+      await addFund(amount, email);
 
       /* Add transaction hisroy later */
 
