@@ -18,16 +18,18 @@ async function deductFund(amount, userId) {
 }
 
 async function addFund(amount, email) {
+  console.log(amount, email);
+
   try {
     const wallet_balance = await topUpDB(email);
-    const add = (wallet_balance[0].wallet_balance += parseInt(amount));
+    const add = wallet_balance[0].wallet_balance + parseInt(amount);
 
     return await collection.updateOne(
       { email },
       { $set: { wallet_balance: add } }
     );
   } catch {
-    throw new Error("Unexpected occurred deducting amount");
+    throw new Error("Unexpected occurred funding");
   }
 }
 
