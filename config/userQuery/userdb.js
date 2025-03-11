@@ -43,7 +43,7 @@ async function createUser(data) {
       updated_at: d,
       wallet_balance: 100,
       pin: null,
-      phoneNumber: null,
+      mobile_number: "",
     });
     return user;
   } catch (e) {
