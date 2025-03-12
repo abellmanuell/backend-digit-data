@@ -38,11 +38,9 @@ router.post("/", async (req, res) => {
   ) {
     // Success! Confirm the customer's payment
     // Check if event exists
-    const {
-      data: { eventId },
-    } = await findUserAccountTransactionById(id);
+    const existingEvent = await findUserAccountTransactionById(id);
 
-    if (eventId) {
+    if (existingEvent) {
       return res.status(200).json({ message: "Already processed" });
     }
 
