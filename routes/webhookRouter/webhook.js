@@ -46,7 +46,7 @@ router.post("/", async (req, res) => {
 
     // Update user balance
     await addFund(amount, customer.email);
-    await createUserAccountTransaction(payload);
+    await createUserAccountTransaction(req.body);
     return res.status(200).json({ message: "Success" });
   } else {
     // Inform the customer their payment was unsuccessful
