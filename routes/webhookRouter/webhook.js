@@ -1,44 +1,59 @@
 const express = require("express");
 const router = express.Router();
+const Flutterwave = require("flutterwave-node-v3");
 require("dotenv").config();
-const { server_response } = require("../../utils/server_response");
-const { addFund } = require("../../config/walletQuery/wallet");
+const {
+  addFund,
+  createUserAccountTransaction,
+  findUserAccountTransactionById,
+} = require("../../config/walletQuery/wallet");
 
 /* Webhook endpoint */
 router.post("/", async (req, res) => {
   // If you specified a secret hash, check for the signature
   const secretHash = process.env.FLW_SECRET_HASH;
   const signature = req.headers["verif-hash"];
+
   if (!signature || signature !== secretHash) {
     // This request isn't from Flutterwave; discard
     res.status(401).end();
   }
 
-  const payload = req.body;
+  /* Payload */
+  const {
+    data: { id, amount, customer },
+  } = req.body;
 
-  const existingEvent = payload.data.status;
+  /* Flutterwave Auth */
+  const flw = new Flutterwave(
+    process.env.FLW_PUBLIC_KEY,
+    process.env.FLW_SECRET_KEY
+  );
 
-  if (existingEvent.status === payload.status) {
-    // The status hasn't changed,
-    // so it's probably just a duplicate event
-    // and we can discard it
-    if (payload.data.status === "successful") {
-      // It's a good idea to log all received events.
-      const {
-        amount,
-        customer: { email },
-      } = payload.data;
+  // Verify transactions
+  const response = await flw.Transaction.verify({ id });
+  if (
+    response.data.status === "successful" &&
+    response.data.currency === "NGN"
+  ) {
+    // Success! Confirm the customer's payment
+    // Check if event exists
+    const {
+      data: { eventId },
+    } = await findUserAccountTransactionById(id);
 
-      console.log(payload);
-      await addFund(amount, email);
-
-      /* Add transaction hisroy later */
-
-      res.status(200).end();
+    if (eventId) {
+      return res.status(200).json({ message: "Already processed" });
     }
+
+    // Update user balance
+    await addFund(amount, customer.email);
+    await createUserAccountTransaction(payload);
+    return res.status(200).json({ message: "Success" });
+  } else {
+    // Inform the customer their payment was unsuccessful
+    return res.status(300).json({ message: "unsuccessful" });
   }
-  // Do something (that doesn't take too long) with the payload
-  res.status(200).end();
 });
 
 module.exports = router;

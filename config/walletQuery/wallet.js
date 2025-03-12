@@ -1,14 +1,36 @@
 const { client } = require("../connectDB/connectdb");
 const { topUpDB } = require("../topUpQuery/topup");
 const db = client.db("digit_data_db");
-const collection = db.collection("users");
+const userCollection = db.collection("users");
+const userAccountTransactions = db.collection("user_account_transactions");
 
+/* Record transactions */
+async function createUserAccountTransaction(transactions) {
+  try {
+    return await userAccountTransactions.insertOne(transactions);
+  } catch {
+    throw new Error("Unexpected occurred create transaction event");
+  }
+}
+
+/* Find recorded transaction by ID */
+async function findUserAccountTransactionById(eventId) {
+  try {
+    return await userAccountTransactions.findOne({
+      $or: [{ eventId }, { tx_rf: eventId }],
+    });
+  } catch {
+    throw new Error("Unexpected occurred finding user account transaction");
+  }
+}
+
+/*Deduct fund from user account */
 async function deductFund(amount, userId) {
   try {
     const wallet_balance = await topUpDB(userId);
     const deducted = wallet_balance[0].wallet_balance - parseInt(amount);
 
-    return await collection.updateOne(
+    return await userCollection.updateOne(
       { _id: userId },
       { $set: { wallet_balance: deducted } }
     );
@@ -17,13 +39,13 @@ async function deductFund(amount, userId) {
   }
 }
 
+/* Add fund to user account */
 async function addFund(amount, email) {
   try {
     const wallet_balance = await topUpDB(email);
-    console.log(wallet_balance);
     const add = wallet_balance[0].wallet_balance + parseInt(amount);
 
-    return await collection.updateOne(
+    return await userCollection.updateOne(
       { email },
       { $set: { wallet_balance: add } }
     );
@@ -32,4 +54,9 @@ async function addFund(amount, email) {
   }
 }
 
-module.exports = { deductFund, addFund };
+module.exports = {
+  deductFund,
+  addFund,
+  findUserAccountTransactionById,
+  createUserAccountTransaction,
+};
