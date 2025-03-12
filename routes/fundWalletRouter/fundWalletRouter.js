@@ -76,7 +76,7 @@ async function getPaymentLink({
           phonenumber: mobile_number,
         },
         customizations: {
-          title: "Flutterwave Standard Payment",
+          title: `${given_name} ${family_name} - Digit Data Payment`,
         },
       }),
     });

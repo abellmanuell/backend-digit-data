@@ -10,19 +10,23 @@ const {
 
 /* Webhook endpoint */
 router.post("/", async (req, res) => {
-  // If you specified a secret hash, check for the signature
+  console.log("Request received...");
+
+  // Validate Flutterwave Signature
   const secretHash = process.env.FLW_SECRET_HASH;
   const signature = req.headers["verif-hash"];
-
   if (!signature || signature !== secretHash) {
-    // This request isn't from Flutterwave; discard
-    res.status(401).end();
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
-  /* Payload */
-  const {
-    data: { id, amount, customer },
-  } = req.body;
+  /* Extract Payload */
+  const { data } = req.body;
+  if (!data || !data.id || !data.amount || !data.customer) {
+    return res.status(400).json({ message: "Invalid webhook payload" });
+  }
+
+  const { id, amount, customer } = data;
+  console.log(`Processing transaction: ${id} for ${customer.email}`);
 
   /* Flutterwave Auth */
   const flw = new Flutterwave(
@@ -30,27 +34,37 @@ router.post("/", async (req, res) => {
     process.env.FLW_SECRET_KEY
   );
 
-  // Verify transactions
-  const response = await flw.Transaction.verify({ id });
-  if (
-    response.data.status === "successful" &&
-    response.data.currency === "NGN"
-  ) {
-    // Success! Confirm the customer's payment
-    // Check if event exists
-    const existingEvent = await findUserAccountTransactionById(id);
+  try {
+    // Verify transaction from Flutterwave API
+    const response = await flw.Transaction.verify({ id });
 
-    if (existingEvent) {
-      return res.status(200).json({ message: "Already processed" });
+    if (
+      response.data.status === "successful" &&
+      response.data.currency === "NGN"
+    ) {
+      // **Start Idempotency Check**
+      const existingEvent = await findUserAccountTransactionById(id);
+
+      if (existingEvent) {
+        console.log(`Transaction ${id} already processed, ignoring...`);
+        return res.status(200).json({ message: "Already processed" });
+      }
+
+      // **Save transaction first to prevent duplicate processing**
+      await createUserAccountTransaction(req.body);
+
+      // **Now, update user balance**
+      await addFund(amount, customer.email);
+
+      console.log(`Transaction ${id} successfully processed.`);
+      return res.status(200).json({ message: "Success" });
+    } else {
+      console.warn(`Transaction ${id} was unsuccessful.`);
+      return res.status(400).json({ message: "Unsuccessful transaction" });
     }
-
-    // Update user balance
-    await addFund(amount, customer.email);
-    await createUserAccountTransaction(req.body);
-    return res.status(200).json({ message: "Success" });
-  } else {
-    // Inform the customer their payment was unsuccessful
-    return res.status(300).json({ message: "unsuccessful" });
+  } catch (error) {
+    console.error("Error processing webhook:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
