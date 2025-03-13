@@ -5,7 +5,9 @@ const collection = db.collection("users");
 
 async function findUsers(data) {
   try {
-    const users = await collection.find({ email: data.email }).toArray();
+    const users = await collection
+      .find({ email: data ?? data.email })
+      .toArray();
     return users;
   } catch (e) {
     console.error(e);
@@ -23,7 +25,9 @@ async function findUser(data) {
 
 async function findUserById(id) {
   try {
-    const user = await collection.findOne({ _id: id });
+    const user = await collection.findOne({
+      $or: [{ _id: id }, { google_id: id }],
+    });
     return user;
   } catch (e) {
     console.error(e);
@@ -37,13 +41,10 @@ async function createUser(data) {
       _id: uuidv7(),
       email: data.email,
       password: data.password,
-      given_name: "",
-      family_name: "",
       created_at: d,
       updated_at: d,
-      wallet_balance: 100,
+      wallet_balance: 0,
       pin: null,
-      mobile_number: "",
     });
     return user;
   } catch (e) {

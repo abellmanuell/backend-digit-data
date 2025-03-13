@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 async function jwtVerify(req) {
   const authorization = req.headers.authorization;
@@ -25,4 +26,12 @@ async function jwtDecode(req) {
   }
 }
 
-module.exports = { jwtVerify, jwtDecode };
+function generateToken(user) {
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "1h",
+  });
+
+  return token;
+}
+
+module.exports = { jwtVerify, jwtDecode, generateToken };

@@ -6,6 +6,7 @@ require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { server_response } = require("../../utils/server_response");
+const { generateToken } = require("../../utils/JwtVerify/jwtVerify");
 
 router.post(
   "/",
@@ -38,16 +39,9 @@ router.post(
 
       if (password) {
         const { password, ...user } = isUserExist;
+        const token = generateToken(user);
 
-        const token = jwt.sign(
-          { userId: user._id },
-          process.env.JWT_SECRET_KEY,
-          {
-            expiresIn: "1h",
-          }
-        );
-
-        return server_response(200, res, "Sign successfully!", {
+        return server_response(200, res, "Sign in successfully!", {
           token,
         });
       } else {

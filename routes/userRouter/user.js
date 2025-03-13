@@ -5,13 +5,36 @@ const { body, matchedData, validationResult } = require("express-validator");
 const router = express.Router();
 
 const userRouter = router.get("/", async (req, res, next) => {
-  const { password, ...other } = await findUserById(req.user.userId);
+  const {
+    access_token,
+    token_type,
+    refresh_token,
+    expiry_date,
+    password,
+    ...others
+  } = await findUserById(req.user.userId);
 
   if (!req.user) {
     return server_response(404, res, "Error occured");
   }
 
-  return server_response(200, res, "Successfully completed", other);
+  // Check if there's google_id to know which data to return
+  if (Object.hasOwn(others, "google_id")) {
+    const response = await fetch(
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${others.access_token}`
+    );
+
+    const { email, given_name, family_name } = await response.json();
+    return server_response(200, res, "Successfully completed", {
+      ...others,
+      email,
+      given_name,
+      family_name,
+    });
+  }
+
+  // Return data
+  return server_response(200, res, "Successfully completed", others);
 });
 
 const editUserProfileRouter = router.put(
