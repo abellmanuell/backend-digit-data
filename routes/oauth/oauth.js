@@ -3,21 +3,18 @@ const router = express.Router();
 const { OAuth2Client } = require("google-auth-library");
 require("dotenv").config();
 
-async function getUserData(access_token) {
-  console.log(access_token);
-
+async function getUserData({ access_token }) {
   const response = await fetch(
     `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
   );
 
   const data = await response.json();
-  console.log("data", data);
+  // console.log("data", data);
 }
 
 router.get("/", async (req, res) => {
   try {
     const code = req.query.code;
-    console.log(code);
 
     const redirectUrl = `${process.env.REDIRECT_URL}/googleme`;
 
@@ -32,9 +29,8 @@ router.get("/", async (req, res) => {
     console.log("token acquired");
 
     const user = oAuth2Client.credentials;
-    console.log("credentials", user);
-
-    await getUserData(user.access_token);
+    console.log(user);
+    // await getUserData(user);
   } catch (err) {
     console.log(err);
 
