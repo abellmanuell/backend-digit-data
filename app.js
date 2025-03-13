@@ -37,11 +37,10 @@ const webhookRouter = require("./routes/webhookRouter/webhook");
 
 const { server_response } = require("./utils/server_response");
 const { jwtVerify } = require("./utils/JwtVerify/jwtVerify");
-const { addFund } = require("./config/walletQuery/wallet");
 
 app.use(bodyPaser.json());
 
-app.use("/authenticate", oAuthRouter);
+app.use("/googleme", oAuthRouter);
 app.use("/google-oauth-request", requestRouter);
 app.use("/signup", signupRouter);
 app.use("/signin", signinRouter);

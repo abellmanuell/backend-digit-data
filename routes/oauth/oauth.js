@@ -15,8 +15,10 @@ async function getUserData(access_token) {
 }
 
 router.get("/", async (req, res) => {
-  const code = req.query.code;
   try {
+    const code = req.query.code;
+    console.log(code);
+
     const redirectUrl = `https://backend-digit-data-production.up.railway.app/googleme`;
 
     const oAuth2Client = new OAuth2Client(
@@ -28,8 +30,10 @@ router.get("/", async (req, res) => {
     const res = await oAuth2Client.getToken(code);
     await oAuth2Client.setCredentials(res.tokens);
     console.log("token acquired");
+
     const user = oAuth2Client.credentials;
     console.log("credentials", user);
+
     await getUserData(user.access_token);
   } catch (err) {
     console.log(err);
