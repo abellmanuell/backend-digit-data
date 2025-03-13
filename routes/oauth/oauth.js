@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const { OAuth2Client } = require("google-auth-library");
-const { findUser, createUser } = require("../../config/userQuery/userdb");
+const {
+  findUser,
+  createUser,
+  findUserById,
+} = require("../../config/userQuery/userdb");
 const { server_response } = require("../../utils/server_response");
 const { generateToken } = require("../../utils/JwtVerify/jwtVerify");
 require("dotenv").config();
