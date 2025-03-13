@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
     const code = req.query.code;
     console.log(code);
 
-    const redirectUrl = `https://backend-digit-data-production.up.railway.app/googleme`;
+    const redirectUrl = `${process.env.REDIRECT_URL}/googleme`;
 
     const oAuth2Client = new OAuth2Client(
       process.env.CLIENT_ID,
@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
 
     console.log("Error with signing on Google");
   }
-  res.redirect("http://localhost:5173");
+  res.redirect(`${process.env.ACCESS_CONTROL_ALLOW_ORIGIN}/dashboard`);
 });
 
 module.exports = router;
