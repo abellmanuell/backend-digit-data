@@ -3,13 +3,19 @@ const router = express.Router();
 const { OAuth2Client } = require("google-auth-library");
 require("dotenv").config();
 
-async function getUserData({ access_token }) {
+async function getUserData({
+  access_token,
+  token_type,
+  refresh_token,
+  expiry_date,
+}) {
   const response = await fetch(
     `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
   );
 
   const data = await response.json();
-  // console.log("data", data);
+  const user = { access_token, token_type, refresh_token, expiry_date };
+  console.log(user);
 }
 
 router.get("/", async (req, res) => {
@@ -28,9 +34,8 @@ router.get("/", async (req, res) => {
     await oAuth2Client.setCredentials(res.tokens);
     console.log("token acquired");
 
-    const user = oAuth2Client.credentials;
-    console.log(user);
-    // await getUserData(user);
+    const credentials = oAuth2Client.credentials;
+    await getUserData(credentials);
   } catch (err) {
     console.log(err);
 
