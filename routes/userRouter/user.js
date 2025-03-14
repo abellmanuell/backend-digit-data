@@ -21,7 +21,7 @@ const userRouter = router.get("/", async (req, res, next) => {
   // Check if there's google_id to know which data to return
   if (Object.hasOwn(others, "google_id")) {
     const response = await fetch(
-      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${others.access_token}`
+      `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
     );
 
     console.log(response);
