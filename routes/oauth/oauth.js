@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
       console.log(sub, email);
       const existingUser = await findUser(email);
 
-      console.log(`The user exist: ${existingUser}`);
+      console.log(existingUser);
 
       /* Check whether user exist */
       if (existingUser) {
