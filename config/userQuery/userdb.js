@@ -16,7 +16,9 @@ async function findUsers(data) {
 
 async function findUser(data) {
   try {
-    const user = await collection.findOne({ email: data ?? data.email });
+    const user = await collection.findOne({
+      $or: [{ email: data }, { email: data.email }],
+    });
     return user;
   } catch (e) {
     console.error(e);

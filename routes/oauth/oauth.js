@@ -47,8 +47,8 @@ router.get("/", async (req, res) => {
         token_type,
         refresh_token,
         expiry_date,
-        google_id: sub,
         email,
+        google_id: sub,
       };
 
       const userCreated = await createUser(newUser);
