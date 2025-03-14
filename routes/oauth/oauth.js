@@ -81,13 +81,19 @@ router.get("/", async (req, res) => {
     await oAuth2Client.setCredentials(authResponse.tokens);
     const credentials = oAuth2Client.credentials;
 
-    await getUserData(credentials);
+    const { status, token, message } = await getUserData(credentials);
+    res.redirect(
+      `${
+        process.env.ACCESS_CONTROL_ALLOW_ORIGIN
+      }/signin?status=${status}&token=${token}&message=${encodeURIComponent(
+        message
+      )}`
+    );
   } catch (err) {
     console.log(err);
 
     console.log("Error with signing on Google");
   }
-  res.redirect(`${process.env.ACCESS_CONTROL_ALLOW_ORIGIN}/signin`);
 });
 
 module.exports = router;
