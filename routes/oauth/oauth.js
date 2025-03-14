@@ -22,10 +22,7 @@ router.get("/", async (req, res) => {
         `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
       );
       const { sub, email } = await response.json();
-      console.log(sub, email);
       const existingUser = await findUser(email);
-
-      console.log(existingUser);
 
       /* Check whether user exist */
       if (existingUser) {
@@ -50,7 +47,7 @@ router.get("/", async (req, res) => {
         token_type,
         refresh_token,
         expiry_date,
-        sub,
+        google_id: sub,
         email,
       };
 

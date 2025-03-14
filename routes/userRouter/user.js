@@ -24,6 +24,7 @@ const userRouter = router.get("/", async (req, res, next) => {
       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${others.access_token}`
     );
 
+    console.log(response);
     const { email, given_name, family_name } = await response.json();
     return server_response(200, res, "Successfully completed", {
       ...others,
