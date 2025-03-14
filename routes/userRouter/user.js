@@ -29,7 +29,7 @@ const userRouter = router.get("/", async (req, res, next) => {
     }
   }
 
-  const {
+  let {
     access_token,
     token_type,
     refresh_token,
