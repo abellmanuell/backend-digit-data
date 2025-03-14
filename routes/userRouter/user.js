@@ -56,7 +56,13 @@ const editUserProfileRouter = router.put(
         console.log(data);
         const { acknowledged } = await updateUser(id, data);
         if (acknowledged) {
-          const { password, ...other } = await findUserById(id);
+          const {
+            password,
+            access_token,
+            refresh_token,
+            expiry_date,
+            ...other
+          } = await findUserById(id);
           return server_response(200, res, "Successfully updated", {
             data: { ...other },
           });
