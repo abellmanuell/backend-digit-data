@@ -24,6 +24,8 @@ router.get("/", async (req, res) => {
       const { sub, email } = await response.json();
       const existingUser = await findUser(email);
 
+      console.log(`The user exist: ${existingUser}`);
+
       /* Check whether user exist */
       if (existingUser) {
         const isGoogleIdExist = Object.hasOwn(existingUser, "google_id");
@@ -31,15 +33,14 @@ router.get("/", async (req, res) => {
         /* Check if user has GOOGLE_ID */
         if (isGoogleIdExist) {
           const token = generateToken(existingUser);
-          return server_response(200, res, "Sign in successfully!", {
-            token,
-          });
+          return { status: 200, message: "Sign in successfully!", token };
         } else {
-          return server_response(
-            403,
-            res,
-            "Oops! You previously signed up with your email and password. Please sign in using your email and password instead of Google."
-          );
+          return {
+            status: 403,
+            message:
+              "Oops! You previously signed up with your email and password. Please sign in using your email and password instead of Google.",
+            token: null,
+          };
         }
       }
 
@@ -60,9 +61,7 @@ router.get("/", async (req, res) => {
           (await findUserById(userCreated.insertedId));
         const token = generateToken(existingUser);
 
-        return server_response(200, res, "Sign in successfully!", {
-          token,
-        });
+        return { status: 200, message: "Sign in successfully!", token };
       }
     }
 

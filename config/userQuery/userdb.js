@@ -38,6 +38,7 @@ async function createUser(data) {
   try {
     const d = new Date();
     const user = await collection.insertOne({
+      ...data,
       _id: uuidv7(),
       email: data.email,
       password: data.password,
