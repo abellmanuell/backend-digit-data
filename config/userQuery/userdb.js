@@ -59,12 +59,12 @@ async function updateUser(id, data) {
   try {
     const d = new Date();
     const updatedUser = await collection.updateOne(
-      { _id: id },
+      { $or: [{ _id: id }, { email: data.email }] },
       { $set: { ...data, updated_at: d } }
     );
 
     console.log(await updateUser);
-    return updatedUser;
+    return await updatedUser;
   } catch (e) {
     console.error(e);
   }

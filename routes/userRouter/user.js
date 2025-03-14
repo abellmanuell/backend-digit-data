@@ -53,7 +53,6 @@ const editUserProfileRouter = router.put(
 
       if (result.isEmpty()) {
         const data = matchedData(req);
-        console.log(data);
         const { acknowledged } = await updateUser(id, data);
         if (acknowledged) {
           const {
