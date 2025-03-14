@@ -3,8 +3,32 @@ const { server_response } = require("../../utils/server_response");
 const { findUserById, updateUser } = require("../../config/userQuery/userdb");
 const { body, matchedData, validationResult } = require("express-validator");
 const router = express.Router();
+const { OAuth2Client } = require("google-auth-library");
+require("dotenv").config();
 
 const userRouter = router.get("/", async (req, res, next) => {
+  const oAuth2Client = new OAuth2Client(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    process.env.REDIRECT_URL
+  );
+
+  async function refreshAccessToken(refreshToken) {
+    try {
+      oAuth2Client.setCredentials({ refresh_token: refreshToken });
+
+      // Request new tokens
+      const { credentials } = await oAuth2Client.refreshAccessToken();
+
+      console.log("New access token:", credentials.access_token);
+
+      return credentials; // Return new access token and expiry info
+    } catch (err) {
+      console.error("Error refreshing token:", err);
+      throw new Error("Failed to refresh access token");
+    }
+  }
+
   const {
     access_token,
     token_type,
@@ -18,13 +42,30 @@ const userRouter = router.get("/", async (req, res, next) => {
     return server_response(404, res, "Error occured");
   }
 
+  if (Date.now() >= expiry_date) {
+    console.log("Access token expired, refreshing...");
+    const newTokens = await refreshAccessToken(refresh_token);
+
+    // Update the stored access token and expiry time
+    access_token = newTokens.access_token;
+    refresh_token = newTokens.refresh_token;
+    token_type = newTokens.token_type;
+    expiry_date = Date.now() + newTokens.expiry_date * 1000;
+
+    await updateUser(others._id, {
+      access_token: newTokens.access_token,
+      refresh_token: newTokens.refresh_token,
+      token_type: newTokens.token_type,
+      expiry_date: Date.now() + newTokens.expiry_date * 1000,
+    });
+  }
+
   // Check if there's google_id to know which data to return
   if (Object.hasOwn(others, "google_id")) {
     const response = await fetch(
       `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
     );
 
-    console.log(response);
     const { email, given_name, family_name } = await response.json();
     return server_response(200, res, "Successfully completed", {
       ...others,

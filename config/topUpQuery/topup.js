@@ -3,6 +3,7 @@ const db = client.db("digit_data_db");
 const collection = db.collection("users");
 
 async function topUpDB(userId) {
+  console.log(userId);
   try {
     const wallet_balance = await collection
       .find({ $or: [{ _id: userId }, { email: userId }] })
