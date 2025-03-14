@@ -63,7 +63,7 @@ async function updateUser(id, data) {
       { $set: { ...data, updated_at: d } }
     );
 
-    console.log(await updateUser);
+    console.log(await updatedUser);
     return await updatedUser;
   } catch (e) {
     console.error(e);
