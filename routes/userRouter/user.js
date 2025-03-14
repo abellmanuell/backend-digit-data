@@ -44,15 +44,16 @@ const editUserProfileRouter = router.put(
     body("given_name").trim(),
     body("family_name").trim(),
     body("email").trim().notEmpty().isEmail(),
-    body("phone_number").trim().isNumeric(),
+    body("mobile_number").trim(),
   ],
   async (req, res) => {
     try {
       const result = validationResult(req);
       const id = req.user.userId;
 
-      if (result.isEmpty) {
+      if (result.isEmpty()) {
         const data = matchedData(req);
+        console.log(data);
         const { acknowledged } = await updateUser(id, data);
         if (acknowledged) {
           const { password, ...other } = await findUserById(id);
