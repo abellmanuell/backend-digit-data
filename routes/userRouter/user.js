@@ -13,9 +13,12 @@ const userRouter = router.get("/", async (req, res, next) => {
     process.env.REDIRECT_URL
   );
 
-  async function refreshAccessToken(refreshToken) {
+  async function refreshAccessToken(refreshToken, access_token) {
     try {
-      oAuth2Client.setCredentials({ refresh_token: refreshToken });
+      oAuth2Client.setCredentials({
+        refresh_token: refreshToken,
+        access_token: access_token,
+      });
 
       // Request new tokens
       const { credentials } = await oAuth2Client.refreshAccessToken();
@@ -42,21 +45,22 @@ const userRouter = router.get("/", async (req, res, next) => {
     return server_response(404, res, "Error occured");
   }
 
-  if (Date.now() >= expiry_date) {
+  if (Date.now() >= expiry_date * 1000) {
     console.log("Access token expired, refreshing...");
-    const newTokens = await refreshAccessToken(refresh_token);
+
+    const newTokens = await refreshAccessToken(refresh_token, access_token);
 
     // Update the stored access token and expiry time
     access_token = newTokens.access_token;
-    refresh_token = newTokens.refresh_token;
+    refresh_token = newTokens.refresh_token || refresh_token;
     token_type = newTokens.token_type;
-    expiry_date = Date.now() + newTokens.expiry_date * 1000;
+    expiry_date = newTokens.expiry_date;
 
     await updateUser(others._id, {
-      access_token: newTokens.access_token,
-      refresh_token: newTokens.refresh_token,
-      token_type: newTokens.token_type,
-      expiry_date: Date.now() + newTokens.expiry_date * 1000,
+      access_token,
+      refresh_token,
+      token_type,
+      expiry_date,
     });
   }
 
