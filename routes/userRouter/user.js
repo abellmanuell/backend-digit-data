@@ -45,7 +45,7 @@ const userRouter = router.get("/", async (req, res, next) => {
     return server_response(404, res, "Error occured");
   }
 
-  if (Date.now() >= expiry_date * 1000) {
+  if (Date.now() >= expiry_date) {
     console.log("Access token expired, refreshing...");
 
     const newTokens = await refreshAccessToken(refresh_token, access_token);

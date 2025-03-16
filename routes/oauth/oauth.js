@@ -6,7 +6,6 @@ const {
   createUser,
   findUserById,
 } = require("../../config/userQuery/userdb");
-const { server_response } = require("../../utils/server_response");
 const { generateToken } = require("../../utils/JwtVerify/jwtVerify");
 require("dotenv").config();
 
