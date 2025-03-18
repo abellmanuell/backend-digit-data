@@ -28,12 +28,14 @@ const {
   userRouter,
   editUserProfileRouter,
 } = require("./routes/userRouter/user");
+const webhookRouter = require("./routes/webhookRouter/webhook");
 const topUpRouter = require("./routes/topupRouter/topup");
 const networksRouter = require("./routes/networksRouter/networks");
 const airtimeTypeRouter = require("./routes/airtimeTypeRouter/airtimeType");
 const transactionsRouter = require("./routes/transactionsRouter/transactionsRouter");
 const fundWalletRouter = require("./routes/fundWalletRouter/fundWalletRouter");
-const webhookRouter = require("./routes/webhookRouter/webhook");
+const dataPlansRouter = require("./routes/dataRouter/dataPlansRouter");
+const buyDataRouter = require("./routes/dataRouter/buyDataRouter");
 
 const { server_response } = require("./utils/server_response");
 const { jwtVerify } = require("./utils/JwtVerify/jwtVerify");
@@ -58,6 +60,8 @@ app.use("/api/topup", topUpRouter);
 app.use("/api/transactions", transactionsRouter);
 app.use("/api/fund-wallet", fundWalletRouter);
 app.use("/flw-webhook", webhookRouter);
+app.use("/api/data-plans", dataPlansRouter);
+app.use("/api/buy-data", buyDataRouter);
 
 async function requiredAuthentication(req, res, next) {
   try {
