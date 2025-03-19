@@ -36,6 +36,9 @@ const transactionsRouter = require("./routes/transactionsRouter/transactionsRout
 const fundWalletRouter = require("./routes/fundWalletRouter/fundWalletRouter");
 const dataPlansRouter = require("./routes/dataRouter/dataPlansRouter");
 const buyDataRouter = require("./routes/dataRouter/buyDataRouter");
+const {
+  changePasswordRouter,
+} = require("./routes/passwordRouter/changePassword");
 
 const { server_response } = require("./utils/server_response");
 const { jwtVerify } = require("./utils/JwtVerify/jwtVerify");
@@ -56,6 +59,7 @@ app.get("/", (req, res) => {
 app.all("/api/*", requiredAuthentication);
 app.use("/api/user", userRouter);
 app.use("/api/user/profile/edit", editUserProfileRouter);
+app.use("/api/user/profile/change-password", changePasswordRouter);
 app.use("/api/topup", topUpRouter);
 app.use("/api/transactions", transactionsRouter);
 app.use("/api/fund-wallet", fundWalletRouter);

@@ -4,7 +4,6 @@ const { findUser } = require("../../config/userQuery/userdb");
 const router = express.Router();
 require("dotenv").config();
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const { server_response } = require("../../utils/server_response");
 const { generateToken } = require("../../utils/JwtVerify/jwtVerify");
 
