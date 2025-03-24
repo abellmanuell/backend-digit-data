@@ -43,7 +43,7 @@ async function deductFund(amount, userId) {
 async function addFund(amount, email) {
   try {
     const wallet_balance = await topUpDB(email);
-    const add = wallet_balance[0].wallet_balance + parseInt(amount);
+    const add = wallet_balance[0].wallet_balance + amount;
 
     return await userCollection.updateOne(
       { email },

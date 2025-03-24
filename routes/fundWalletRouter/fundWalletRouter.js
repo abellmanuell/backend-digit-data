@@ -39,7 +39,10 @@ router.post(
           });
         }
 
-        /* Check whether transaction is greater than 40 */
+        /* 
+        TRANSACTION FEE 40
+        Check whether transaction is greater than 40 
+        */
         if (parseInt(data.transactionFee) < 40) {
           return server_response(406, res, {
             error: [{ msg: "Transaction Fee must be equal ₦40" }],

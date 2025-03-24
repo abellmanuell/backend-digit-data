@@ -54,8 +54,8 @@ router.post("/", async (req, res) => {
       await createUserAccountTransaction(req.body);
 
       // **Now, update user balance**
-      console.log("Webhook");
-      await addFund(amount, customer.email);
+      // Substract Transaction Fee [NGN40] from amount
+      await addFund(parseInt(amount) - 40, customer.email);
 
       console.log(`Transaction ${id} successfully processed.`);
       return res.status(200).json({ message: "Success" });
