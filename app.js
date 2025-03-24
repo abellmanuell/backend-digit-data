@@ -1,3 +1,5 @@
+const fs = require("fs");
+const https = require("https");
 const express = require("express");
 const app = express();
 require("dotenv").config();
@@ -83,4 +85,16 @@ app.listen(PORT, () => {
   connectDB().catch(console.error);
 });
 
-module.exports = app;
+https
+  .createServer(
+    {
+      key: fs.readFileSync(
+        "/etc/letsencrypt/live/api.abellmanuell.com.ng/privkey.pem"
+      ),
+      cert: fs.readFileSync(
+        "/etc/letsencrypt/live/api.abellmanuell.com.ng/fullchain.pem"
+      ),
+    },
+    app
+  )
+  .listen(443);
