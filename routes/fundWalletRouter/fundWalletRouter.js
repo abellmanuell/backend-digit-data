@@ -23,6 +23,7 @@ router.post(
       .withMessage("Please kindly update mobile number"),
     body("given_name").trim(),
     body("family_name").trim(),
+    body("transactionFee").trim(),
   ],
   async (req, res) => {
     try {
@@ -30,6 +31,22 @@ router.post(
 
       if (result.isEmpty()) {
         const data = matchedData(req);
+
+        /* Check if amount is < 100 */
+        if (parseInt(data.amount) < 100) {
+          return server_response(406, res, {
+            error: [{ msg: "Amount must be greater than or equal ₦100" }],
+          });
+        }
+
+        /* Check whether transaction is greater than 40 */
+        if (parseInt(data.transactionFee) < 40) {
+          return server_response(406, res, {
+            error: [{ msg: "Transaction Fee must be equal ₦40" }],
+          });
+        }
+
+        /* Generate link */
         const link = await getPaymentLink({
           ...data,
           redirect_url:
@@ -57,6 +74,7 @@ async function getPaymentLink({
   family_name,
   mobile_number,
   redirect_url,
+  transactionFee,
 }) {
   try {
     const response = await fetch("https://api.flutterwave.com/v3/payments", {
@@ -67,7 +85,7 @@ async function getPaymentLink({
       },
       body: JSON.stringify({
         tx_ref: uuidv7(),
-        amount,
+        amount: parseInt(amount) + parseInt(transactionFee),
         currency: "NGN",
         redirect_url,
         customer: {
