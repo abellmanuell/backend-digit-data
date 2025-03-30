@@ -85,7 +85,7 @@ app.listen(PORT, () => {
   connectDB().catch(console.error);
 });
 
-/* https
+https
   .createServer(
     {
       key: fs.readFileSync(
@@ -98,4 +98,3 @@ app.listen(PORT, () => {
     app
   )
   .listen(443);
- */
