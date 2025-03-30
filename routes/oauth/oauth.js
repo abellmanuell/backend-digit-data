@@ -5,6 +5,7 @@ const {
   findUser,
   createUser,
   findUserById,
+  updateUser,
 } = require("../../config/userQuery/userdb");
 const { generateToken } = require("../../utils/JwtVerify/jwtVerify");
 require("dotenv").config();
@@ -20,17 +21,11 @@ router.get("/", async (req, res) => {
       const response = await fetch(
         `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
       );
+
       const { sub, email } = await response.json();
       const existingUser = await findUser(email);
 
-      const isGoogleIdExist = Object.hasOwn(existingUser, "google_id");
-      /* Check whether user exist */
-      if (existingUser && isGoogleIdExist) {
-        const token = generateToken(existingUser);
-        return { status: 200, message: "Sign in successfully!", token };
-      }
-
-      const newUser = {
+      const userOAuthCredentials = {
         access_token,
         token_type,
         refresh_token,
@@ -39,7 +34,22 @@ router.get("/", async (req, res) => {
         google_id: sub,
       };
 
-      const userCreated = await createUser(newUser);
+      const isGoogleIdExist = Object.hasOwn(existingUser, "google_id");
+      /* Check whether user exist */
+      if (existingUser && isGoogleIdExist) {
+        const token = generateToken(existingUser);
+        return { status: 200, message: "Sign in successfully!", token };
+      }
+
+      /* Updated existing user without google_id */
+      if (existingUser && !isGoogleIdExist) {
+        await updateUser(existingUser._id, userOAuthCredentials);
+        const token = generateToken(existingUser);
+        return { status: 200, message: "Sign in successfully!", token };
+      }
+
+      /* Create user */
+      const userCreated = await createUser(userOAuthCredentials);
 
       if (userCreated.acknowledged) {
         const existingUser =
